@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111827">
+<meta name="description" content="Monthly Budget and Expense Tracker">
+<link rel="manifest" href="manifest.json">
+<title>My Budget</title>
+<style>
+:root{--bg:#f4f7fb;--card:#fff;--text:#111827;--muted:#64748b;--border:#e2e8f0;--green:#16a34a;--greenbg:#dcfce7;--orange:#d97706;--orangebg:#fef3c7;--red:#dc2626;--redbg:#fee2e2;--blue:#2563eb}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text)}
+main{max-width:760px;margin:auto;padding:16px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}.title{font-size:24px;font-weight:800}.month{padding:10px;border:1px solid var(--border);border-radius:12px;background:#fff}
+.status{border-radius:20px;padding:18px;margin-bottom:14px;border:1px solid transparent}.status.green{background:var(--greenbg);color:var(--green)}.status.orange{background:var(--orangebg);color:var(--orange)}.status.red{background:var(--redbg);color:var(--red)}
+.status h2{margin:0 0 4px;font-size:18px}.big{font-size:30px;font-weight:850}.sub{font-size:13px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:14px}.label{font-size:12px;color:var(--muted)}.value{font-size:20px;font-weight:750;margin-top:4px}
+.panel{background:#fff;border:1px solid var(--border);border-radius:16px;padding:15px;margin-bottom:14px}.panel h3{margin:0 0 12px}
+form{display:grid;gap:10px}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}label{font-size:12px;color:var(--muted);font-weight:650}input,select,button{width:100%;min-height:46px;border:1px solid var(--border);border-radius:12px;padding:10px 12px;font:inherit;background:#fff}button{background:var(--blue);color:white;border:0;font-weight:750;cursor:pointer}.secondary{background:#eef2ff;color:#1e40af}.danger{background:#fff;color:var(--red);border:1px solid #fecaca}
+.category{display:grid;grid-template-columns:minmax(0,1fr) 85px 85px 74px;gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid #eef2f7;font-size:13px}.category:last-child{border-bottom:0}.pill{border-radius:999px;padding:5px 8px;text-align:center;font-weight:750;font-size:11px}.pill.green{background:var(--greenbg);color:var(--green)}.pill.orange{background:var(--orangebg);color:var(--orange)}.pill.red{background:var(--redbg);color:var(--red)}
+.progress{height:8px;background:#e5e7eb;border-radius:99px;overflow:hidden;margin-top:7px}.bar{height:100%;background:var(--green);width:0}.bar.orange{background:var(--orange)}.bar.red{background:var(--red)}
+.list{display:grid;gap:8px}.expense{display:grid;grid-template-columns:1fr auto;gap:8px;padding:10px;border:1px solid var(--border);border-radius:12px}.expense b{display:block}.expense small{color:var(--muted)}.amount{font-weight:800;text-align:right}.empty{color:var(--muted);font-size:13px;padding:10px 0}.note{font-size:12px;color:var(--muted);line-height:1.45}
+@media(max-width:520px){.grid{grid-template-columns:1fr 1fr}.grid .card:last-child{grid-column:1/-1}.row{grid-template-columns:1fr}.category{grid-template-columns:minmax(0,1fr) 72px 72px}.category .signal{grid-column:3}.top{align-items:flex-start;flex-direction:column}.month{width:100%}}
+</style>
+</head>
+<body>
+<main>
+<div class="top"><div><div class="title">💰 My Budget</div><div class="sub">Expense tracker & monthly budget</div></div><input id="month" class="month" type="month"></div>
+
+<div id="overall" class="status green">
+<h2 id="overallTitle">🟢 WITHIN BUDGET</h2>
+<div class="big" id="remaining">₹0 remaining</div>
+<div class="sub" id="overallSub">Set your monthly income and budgets below.</div>
+</div>
+
+<div class="grid">
+<div class="card"><div class="label">Income</div><div class="value" id="incomeView">₹0</div></div>
+<div class="card"><div class="label">Budget</div><div class="value" id="budgetView">₹0</div></div>
+<div class="card"><div class="label">Spent</div><div class="value" id="spentView">₹0</div></div>
+</div>
+
+<section class="panel">
+<h3>➕ Add Expense</h3>
+<form id="expenseForm">
+<div class="row">
+<div><label>Amount</label><input id="amount" type="number" min="1" step="1" required placeholder="e.g. 500"></div>
+<div><label>Mode</label><select id="mode"><option>UPI</option><option>Cash</option><option>Credit Card</option><option>Debit Card</option><option>Bank Transfer</option><option>Other</option></select></div>
+</div>
+<div class="row">
+<div><label>Category</label><select id="category"></select></div>
+<div><label>Date</label><input id="date" type="date" required></div>
+</div>
+<div><label>Description</label><input id="description" maxlength="120" placeholder="Optional"></div>
+<button type="submit" id="saveBtn">SAVE EXPENSE</button>
+<div id="saveMsg" class="note"></div>
+</form>
+</section>
+
+<section class="panel">
+<h3>📊 Category Budget Status</h3>
+<div id="categories"></div>
+</section>
+
+<section class="panel">
+<h3>⚙️ Monthly Settings</h3>
+<div class="row">
+<div><label>Monthly income</label><input id="income" type="number" min="0" step="100" placeholder="80000"></div>
+<div><label>Overall budget</label><input id="overallBudget" type="number" min="0" step="100" placeholder="60000"></div>
+</div>
+<div id="budgetInputs" style="margin-top:10px"></div>
+<button id="saveBudget" type="button" class="secondary" style="margin-top:10px">SAVE BUDGET SETTINGS</button>
+</section>
+
+<section class="panel">
+<h3>🧾 Recent Expenses</h3>
+<div id="expenses" class="list"></div>
+</section>
+<div class="note">Data is stored locally in this app and can also be sent to your Google Sheet after you configure the Apps Script Web App URL in <b>config.js</b>.</div>
+</main>
+<script src="config.js"></script>
+<script>
+(()=>{const C=window.BUDGET_CONFIG||{};const cats=C.categories||["Loans/EMI","Credit Card","Electricity & Water","Mobile/Internet","Groceries","School Fees","Fuel/Transport","Insurance","Medical/Health","Household","Shopping","Subscriptions","Savings/Investments","Miscellaneous"];let state=JSON.parse(localStorage.getItem("budgetState")||"null")||{income:0,overallBudget:0,budgets:{},expenses:[]};cats.forEach(c=>{if(state.budgets[c]==null)state.budgets[c]=0});const $=id=>document.getElementById(id), money=n=>"₹"+Math.round(Number(n)||0).toLocaleString("en-IN"), save=()=>localStorage.setItem("budgetState",JSON.stringify(state));$("month").value=new Date().toISOString().slice(0,7);$("date").value=new Date().toISOString().slice(0,10);cats.forEach(c=>{$("category").insertAdjacentHTML("beforeend",`<option>${c}</option>`);$("budgetInputs").insertAdjacentHTML("beforeend",`<div class="row" style="margin-bottom:8px"><label style="padding-top:14px">${c}</label><input class="budgetInput" data-cat="${c}" type="number" min="0" step="100" placeholder="Budget"></div>`)});$("income").value=state.income||"";$("overallBudget").value=state.overallBudget||"";document.querySelectorAll(".budgetInput").forEach(i=>i.value=state.budgets[i.dataset.cat]||"");
+function calc(){let spent=state.expenses.filter(e=>e.date.slice(0,7)==$("month").value).reduce((s,e)=>s+e.amount,0), budget=state.overallBudget||Object.values(state.budgets).reduce((s,n)=>s+(Number(n)||0),0), rem=budget-spent, ratio=budget?spent/budget:0, cls=ratio>1?"red":ratio>=.8?"orange":"green";$("overall").className="status "+cls;$("overallTitle").textContent=cls==="red"?"🔴 BUDGET EXCEEDED":cls==="orange"?"🟠 NEAR BUDGET LIMIT":"🟢 WITHIN BUDGET";$("remaining").textContent=rem>=0?money(rem)+" remaining":money(-rem)+" over budget";$("overallSub").textContent=budget?Math.round(ratio*100)+"% of monthly budget used":"Set a monthly budget";$("incomeView").textContent=money(state.income);$("budgetView").textContent=money(budget);$("spentView").textContent=money(spent);
+$("categories").innerHTML=cats.map(c=>{let b=Number(state.budgets[c])||0,s=state.expenses.filter(e=>e.date.slice(0,7)==$("month").value&&e.category===c).reduce((x,e)=>x+e.amount,0),r=b?s/b:0,k=r>1?"red":r>=.8?"orange":"green",txt=b?(r>1?"EXCEEDED":r>=.8?"NEAR LIMIT":"OK"):"NO BUDGET";return `<div class="category"><div><b>${c}</b><div class="progress"><div class="bar ${k}" style="width:${Math.min(r*100,100)}%"></div></div></div><div>${money(b)}</div><div>${money(s)}</div><div class="pill ${k} signal">${txt}</div></div>`}).join("");
+let ex=state.expenses.filter(e=>e.date.slice(0,7)==$("month").value).sort((a,b)=>b.date.localeCompare(a.date)||b.ts-a.ts).slice(0,30);$("expenses").innerHTML=ex.length?ex.map(e=>`<div class="expense"><div><b>${e.category}</b><small>${e.date} • ${e.mode}${e.description?" • "+e.description:""}</small></div><div class="amount">${money(e.amount)}</div></div>`).join(""):'<div class="empty">No expenses for this month.</div>'}
+$("saveBudget").onclick=()=>{state.income=Math.max(0,Number($("income").value)||0);state.overallBudget=Math.max(0,Number($("overallBudget").value)||0);document.querySelectorAll(".budgetInput").forEach(i=>state.budgets[i.dataset.cat]=Math.max(0,Number(i.value)||0));save();calc();$("saveMsg").textContent="";};
+$("expenseForm").onsubmit=async ev=>{ev.preventDefault();let amount=Number($("amount").value);if(!amount||amount<0){$("saveMsg").textContent="Enter a valid amount.";return}let e={date:$("date").value,ts:Date.now(),amount,mode:$("mode").value,category:$("category").value,description:$("description").value.trim()};state.expenses.push(e);save();calc();$("expenseForm").reset();$("date").value=new Date().toISOString().slice(0,10);$("saveMsg").textContent="Saved on this device.";if(C.webAppUrl){try{let r=await fetch(C.webAppUrl,{method:"POST",body:JSON.stringify(e)});$("saveMsg").textContent=r.ok?"Saved locally + Google Sheet.":"Saved locally; Google Sheet sync failed."}catch(err){$("saveMsg").textContent="Saved locally; Google Sheet sync unavailable."}}};
+$("month").onchange=calc;calc();})();
+</script>
+</body></html>

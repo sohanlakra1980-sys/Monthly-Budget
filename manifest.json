@@ -1,0 +1,9 @@
+{
+  "name":"My Budget - Expense Tracker",
+  "short_name":"My Budget",
+  "start_url":".",
+  "display":"standalone",
+  "background_color":"#f4f7fb",
+  "theme_color":"#111827",
+  "icons":[]
+}
