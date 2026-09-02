@@ -1,103 +1,16 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#111827">
-<meta name="description" content="Monthly Budget and Expense Tracker">
-<link rel="manifest" href="manifest.json">
-<title>My Budget</title>
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#111827"><link rel="manifest" href="manifest.json"><title>My Budget V2</title>
 <style>
-:root{--bg:#f4f7fb;--card:#fff;--text:#111827;--muted:#64748b;--border:#e2e8f0;--green:#16a34a;--greenbg:#dcfce7;--orange:#d97706;--orangebg:#fef3c7;--red:#dc2626;--redbg:#fee2e2;--blue:#2563eb}
-*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text)}
-main{max-width:760px;margin:auto;padding:16px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}.title{font-size:24px;font-weight:800}.month{padding:10px;border:1px solid var(--border);border-radius:12px;background:#fff}
-.status{border-radius:20px;padding:18px;margin-bottom:14px;border:1px solid transparent}.status.green{background:var(--greenbg);color:var(--green)}.status.orange{background:var(--orangebg);color:var(--orange)}.status.red{background:var(--redbg);color:var(--red)}
-.status h2{margin:0 0 4px;font-size:18px}.big{font-size:30px;font-weight:850}.sub{font-size:13px;color:var(--muted)}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:14px}.label{font-size:12px;color:var(--muted)}.value{font-size:20px;font-weight:750;margin-top:4px}
-.panel{background:#fff;border:1px solid var(--border);border-radius:16px;padding:15px;margin-bottom:14px}.panel h3{margin:0 0 12px}
-form{display:grid;gap:10px}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}label{font-size:12px;color:var(--muted);font-weight:650}input,select,button{width:100%;min-height:46px;border:1px solid var(--border);border-radius:12px;padding:10px 12px;font:inherit;background:#fff}button{background:var(--blue);color:white;border:0;font-weight:750;cursor:pointer}.secondary{background:#eef2ff;color:#1e40af}.danger{background:#fff;color:var(--red);border:1px solid #fecaca}
-.category{display:grid;grid-template-columns:minmax(0,1fr) 85px 85px 74px;gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid #eef2f7;font-size:13px}.category:last-child{border-bottom:0}.pill{border-radius:999px;padding:5px 8px;text-align:center;font-weight:750;font-size:11px}.pill.green{background:var(--greenbg);color:var(--green)}.pill.orange{background:var(--orangebg);color:var(--orange)}.pill.red{background:var(--redbg);color:var(--red)}
-.progress{height:8px;background:#e5e7eb;border-radius:99px;overflow:hidden;margin-top:7px}.bar{height:100%;background:var(--green);width:0}.bar.orange{background:var(--orange)}.bar.red{background:var(--red)}
-.list{display:grid;gap:8px}.expense{display:grid;grid-template-columns:1fr auto;gap:8px;padding:10px;border:1px solid var(--border);border-radius:12px}.expense b{display:block}.expense small{color:var(--muted)}.amount{font-weight:800;text-align:right}.empty{color:var(--muted);font-size:13px;padding:10px 0}.note{font-size:12px;color:var(--muted);line-height:1.45}
-@media(max-width:520px){.grid{grid-template-columns:1fr 1fr}.grid .card:last-child{grid-column:1/-1}.row{grid-template-columns:1fr}.category{grid-template-columns:minmax(0,1fr) 72px 72px}.category .signal{grid-column:3}.top{align-items:flex-start;flex-direction:column}.month{width:100%}}
-</style>
-</head>
-<body>
-<main>
-<div class="top"><div><div class="title">💰 My Budget</div><div class="sub">Expense tracker & monthly budget</div></div><input id="month" class="month" type="month"></div>
-
-<div id="overall" class="status green">
-<h2 id="overallTitle">🟢 WITHIN BUDGET</h2>
-<div class="big" id="remaining">₹0 remaining</div>
-<div class="sub" id="overallSub">Set your monthly income and budgets below.</div>
-</div>
-
-<div class="grid">
-<div class="card"><div class="label">Income</div><div class="value" id="incomeView">₹0</div></div>
-<div class="card"><div class="label">Budget</div><div class="value" id="budgetView">₹0</div></div>
-<div class="card"><div class="label">Spent</div><div class="value" id="spentView">₹0</div></div>
-</div>
-
-<section class="panel">
-<h3>➕ Add Expense</h3>
-<form id="expenseForm">
-<div class="row">
-<div><label>Amount</label><input id="amount" type="number" min="1" step="1" required placeholder="e.g. 500"></div>
-<div><label>Mode</label><select id="mode"><option>UPI</option><option>Cash</option><option>Credit Card</option><option>Debit Card</option><option>Bank Transfer</option><option>Other</option></select></div>
-</div>
-<div class="row">
-<div><label>Category</label><select id="category"></select></div>
-<div><label>Date</label><input id="date" type="date" required></div>
-</div>
-<div><label>Description</label><input id="description" maxlength="120" placeholder="Optional"></div>
-<button type="submit" id="saveBtn">SAVE EXPENSE</button>
-<div id="saveMsg" class="note"></div>
-</form>
-</section>
-
-<section class="panel">
-<h3>📊 Category Budget Status</h3>
-<div id="categories"></div>
-</section>
-
-<section class="panel">
-<h3>⚙️ Monthly Settings</h3>
-<div class="row">
-<div><label>Monthly income</label><input id="income" type="number" min="0" step="100" placeholder="80000"></div>
-<div><label>Overall budget</label><input id="overallBudget" type="number" min="0" step="100" placeholder="60000"></div>
-</div>
-<div id="budgetInputs" style="margin-top:10px"></div>
-<button id="saveBudget" type="button" class="secondary" style="margin-top:10px">SAVE BUDGET SETTINGS</button>
-</section>
-
-<section class="panel">
-<h3>🧾 Recent Expenses</h3>
-<div id="expenses" class="list"></div>
-</section>
-<div class="note"><b>Google Sheets connected.</b> Expenses are saved locally first and sent to your Google Sheet automatically.</div>
-</main>
-<script src="config.js"></script>
-<script>
-(()=>{const C=window.BUDGET_CONFIG||{};const cats=C.categories||["Loans/EMI","Credit Card","Electricity & Water","Mobile/Internet","Groceries","School Fees","Fuel/Transport","Insurance","Medical/Health","Household","Shopping","Subscriptions","Savings/Investments","Miscellaneous"];let state=JSON.parse(localStorage.getItem("budgetState")||"null")||{income:0,overallBudget:0,budgets:{},expenses:[]};cats.forEach(c=>{if(state.budgets[c]==null)state.budgets[c]=0});const $=id=>document.getElementById(id), money=n=>"₹"+Math.round(Number(n)||0).toLocaleString("en-IN"), save=()=>localStorage.setItem("budgetState",JSON.stringify(state));$("month").value=new Date().toISOString().slice(0,7);$("date").value=new Date().toISOString().slice(0,10);cats.forEach(c=>{$("category").insertAdjacentHTML("beforeend",`<option>${c}</option>`);$("budgetInputs").insertAdjacentHTML("beforeend",`<div class="row" style="margin-bottom:8px"><label style="padding-top:14px">${c}</label><input class="budgetInput" data-cat="${c}" type="number" min="0" step="100" placeholder="Budget"></div>`)});$("income").value=state.income||"";$("overallBudget").value=state.overallBudget||"";document.querySelectorAll(".budgetInput").forEach(i=>i.value=state.budgets[i.dataset.cat]||"");
-function calc(){let spent=state.expenses.filter(e=>e.date.slice(0,7)==$("month").value).reduce((s,e)=>s+e.amount,0), budget=state.overallBudget||Object.values(state.budgets).reduce((s,n)=>s+(Number(n)||0),0), rem=budget-spent, ratio=budget?spent/budget:0, cls=ratio>1?"red":ratio>=.8?"orange":"green";$("overall").className="status "+cls;$("overallTitle").textContent=cls==="red"?"🔴 BUDGET EXCEEDED":cls==="orange"?"🟠 NEAR BUDGET LIMIT":"🟢 WITHIN BUDGET";$("remaining").textContent=rem>=0?money(rem)+" remaining":money(-rem)+" over budget";$("overallSub").textContent=budget?Math.round(ratio*100)+"% of monthly budget used":"Set a monthly budget";$("incomeView").textContent=money(state.income);$("budgetView").textContent=money(budget);$("spentView").textContent=money(spent);
-$("categories").innerHTML=cats.map(c=>{let b=Number(state.budgets[c])||0,s=state.expenses.filter(e=>e.date.slice(0,7)==$("month").value&&e.category===c).reduce((x,e)=>x+e.amount,0),r=b?s/b:0,k=r>1?"red":r>=.8?"orange":"green",txt=b?(r>1?"EXCEEDED":r>=.8?"NEAR LIMIT":"OK"):"NO BUDGET";return `<div class="category"><div><b>${c}</b><div class="progress"><div class="bar ${k}" style="width:${Math.min(r*100,100)}%"></div></div></div><div>${money(b)}</div><div>${money(s)}</div><div class="pill ${k} signal">${txt}</div></div>`}).join("");
-let ex=state.expenses.filter(e=>e.date.slice(0,7)==$("month").value).sort((a,b)=>b.date.localeCompare(a.date)||b.ts-a.ts).slice(0,30);$("expenses").innerHTML=ex.length?ex.map(e=>`<div class="expense"><div><b>${e.category}</b><small>${e.date} • ${e.mode}${e.description?" • "+e.description:""}</small></div><div class="amount">${money(e.amount)}</div></div>`).join(""):'<div class="empty">No expenses for this month.</div>'}
-$("saveBudget").onclick=()=>{state.income=Math.max(0,Number($("income").value)||0);state.overallBudget=Math.max(0,Number($("overallBudget").value)||0);document.querySelectorAll(".budgetInput").forEach(i=>state.budgets[i.dataset.cat]=Math.max(0,Number(i.value)||0));save();calc();$("saveMsg").textContent="";};
-$("expenseForm").onsubmit=async ev=>{ev.preventDefault();let amount=Number($("amount").value);if(!amount||amount<0){$("saveMsg").textContent="Enter a valid amount.";return}let e={date:$("date").value,ts:Date.now(),amount,mode:$("mode").value,category:$("category").value,description:$("description").value.trim()};state.expenses.push(e);save();calc();$("expenseForm").reset();$("date").value=new Date().toISOString().slice(0,10);$("saveMsg").textContent="Saved on this device.";if(C.webAppUrl){
-  try{
-    const body=new URLSearchParams({
-      date:e.date,
-      amount:String(e.amount),
-      mode:e.mode,
-      category:e.category,
-      description:e.description
-    });
-    await fetch(C.webAppUrl,{method:"POST",mode:"no-cors",body});
-    $("saveMsg").textContent="Saved locally + sent to Google Sheet.";
-  }catch(err){
-    $("saveMsg").textContent="Saved locally; Google Sheet sync unavailable.";
-  }
-}};
-$("month").onchange=calc;calc();})();
-</script>
-</body></html>
+:root{--bg:#f4f7fb;--card:#fff;--t:#111827;--m:#64748b;--b:#e2e8f0;--g:#16a34a;--gb:#dcfce7;--o:#d97706;--ob:#fef3c7;--r:#dc2626;--rb:#fee2e2;--bl:#2563eb}*{box-sizing:border-box}body{margin:0;font-family:system-ui;background:var(--bg);color:var(--t)}main{max-width:820px;margin:auto;padding:14px}.top{display:flex;justify-content:space-between;align-items:end;gap:12px;margin-bottom:12px}.title{font-size:25px;font-weight:850}.sub,.note{font-size:12px;color:var(--m)}input,select,button{width:100%;min-height:45px;border:1px solid var(--b);border-radius:11px;padding:9px 11px;font:inherit;background:#fff}button{background:var(--bl);color:#fff;border:0;font-weight:800}.secondary{background:#eef2ff;color:#1e40af}.month{width:auto}.status{border-radius:20px;padding:18px;margin-bottom:12px}.green{background:var(--gb);color:var(--g)}.orange{background:var(--ob);color:var(--o)}.red{background:var(--rb);color:var(--r)}.status h2{margin:0 0 3px;font-size:18px}.big{font-size:30px;font-weight:850}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:12px}.card,.panel{background:var(--card);border:1px solid var(--b);border-radius:16px}.card{padding:13px}.panel{padding:14px;margin-bottom:12px}.label{font-size:11px;color:var(--m)}.value{font-size:19px;font-weight:800;margin-top:3px}.row{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px}label{font-size:11px;color:var(--m);font-weight:700;display:block;margin-bottom:4px}.cat{padding:10px 0;border-bottom:1px solid #eef2f7}.cathead{display:grid;grid-template-columns:minmax(0,1fr) 75px 75px 75px;gap:7px;align-items:center;font-size:12px}.catname{font-weight:750}.num{text-align:right}.pill{border-radius:999px;padding:5px;text-align:center;font-size:10px;font-weight:800}.progress{height:7px;background:#e5e7eb;border-radius:99px;overflow:hidden;margin-top:6px}.bar{height:100%;background:var(--g)}.bar.orange{background:var(--o)}.bar.red{background:var(--r)}.expense{display:grid;grid-template-columns:1fr auto;gap:8px;padding:10px;border:1px solid var(--b);border-radius:11px;margin-bottom:7px}.expense small{display:block;color:var(--m)}.amount{font-weight:850}.toolbar{display:flex;justify-content:space-between;align-items:center;gap:8px}.budget{display:grid;grid-template-columns:1fr 130px;gap:8px;margin:7px 0}@media(max-width:620px){.grid{grid-template-columns:1fr 1fr}.top{flex-direction:column;align-items:stretch}.month{width:100%}}@media(max-width:450px){.row{grid-template-columns:1fr}.cathead{grid-template-columns:minmax(0,1fr) 62px 62px 65px;font-size:11px}}
+</style></head><body><main>
+<div class="top"><div><div class="title">💰 My Budget</div><div class="sub">V2 • Google Sheets backed</div></div><input id="month" class="month" type="month"></div>
+<div id="status" class="status green"><h2 id="stitle">🟢 WITHIN BUDGET</h2><div id="remaining" class="big">₹0 remaining</div><div id="ssub" class="sub">Loading…</div></div>
+<div class="grid"><div class="card"><div class="label">Income</div><div id="incomeV" class="value">₹0</div></div><div class="card"><div class="label">Budget</div><div id="budgetV" class="value">₹0</div></div><div class="card"><div class="label">Spent</div><div id="spentV" class="value">₹0</div></div><div class="card"><div class="label">Remaining</div><div id="remainV" class="value">₹0</div></div></div>
+<section class="panel"><h3>➕ Add Expense</h3><form id="ef"><div class="row"><div><label>Amount</label><input id="amount" type="number" min="1" required></div><div><label>Mode</label><select id="mode"><option>UPI</option><option>Cash</option><option>Credit Card</option><option>Debit Card</option><option>Bank Transfer</option><option>Other</option></select></div></div><div class="row"><div><label>Category</label><select id="cat"></select></div><div><label>Date</label><input id="date" type="date" required></div></div><label>Description</label><input id="desc" maxlength="120" placeholder="Optional"><button>SAVE EXPENSE</button><div id="emsg" class="note"></div></form></section>
+<section class="panel"><div class="toolbar"><h3>📊 Category Status</h3><span id="sync" class="note">Connecting…</span></div><div id="cats"></div></section>
+<section class="panel"><h3>⚙️ Monthly Budget</h3><div class="row"><div><label>Monthly income</label><input id="income" type="number" min="0"></div><div><label>Overall spending budget</label><input id="overall" type="number" min="0"></div></div><div id="bis"></div><button id="saveB" class="secondary" type="button">SAVE BUDGET TO GOOGLE SHEET</button><div id="bmsg" class="note"></div></section>
+<section class="panel"><div class="toolbar"><h3>🧾 Recent Expenses</h3><button id="refresh" class="secondary" type="button" style="width:auto">↻ Refresh</button></div><div id="expenses"></div></section>
+<section class="panel"><h3>💳 Spending by Mode</h3><div id="modes"></div></section>
+<div class="note">🟢 below 80% • 🟠 80–100% • 🔴 above 100%. Google Sheets is the master backend; the app keeps a local backup.</div>
+</main><script src="config.js"></script><script>
+(()=>{const C=window.BUDGET_CONFIG||{},cats=C.categories||["Loans/EMI","Credit Card","Electricity & Water","Mobile/Internet","Groceries","School Fees","Fuel/Transport","Insurance","Medical/Health","Household","Shopping","Subscriptions","Savings/Investments","Miscellaneous"],$=x=>document.getElementById(x),money=n=>"₹"+Math.round(Number(n)||0).toLocaleString("en-IN"),now=new Date(),today=now.toISOString().slice(0,10);let s=JSON.parse(localStorage.getItem("budgetV2")||"null")||{income:0,overall:0,budgets:{},expenses:[]};cats.forEach(c=>s.budgets[c]??=0);$("month").value=today.slice(0,7);$("date").value=today;cats.forEach(c=>{$("cat").insertAdjacentHTML("beforeend",`<option>${c}</option>`);$("bis").insertAdjacentHTML("beforeend",`<div class="budget"><label>${c}</label><input class="bi" data-c="${c}" type="number" min="0" placeholder="Budget"></div>`)});const save=()=>localStorage.setItem("budgetV2",JSON.stringify(s));function form(){ $("income").value=s.income||"";$("overall").value=s.overall||"";document.querySelectorAll(".bi").forEach(x=>x.value=s.budgets[x.dataset.c]||"") }function ex(){return s.expenses.filter(e=>(e.date||"").slice(0,7)==$("month").value)}function render(){let a=ex(),spent=a.reduce((x,e)=>x+e.amount,0),budget=s.overall||Object.values(s.budgets).reduce((x,n)=>x+(+n||0),0),p=budget?spent/budget:0,k=p>1?"red":p>=.8?"orange":"green",rem=budget-spent;$("status").className="status "+k;$("stitle").textContent=k=="red"?"🔴 BUDGET EXCEEDED":k=="orange"?"🟠 NEAR BUDGET LIMIT":"🟢 WITHIN BUDGET";$("remaining").textContent=rem>=0?money(rem)+" remaining":money(-rem)+" over budget";$("ssub").textContent=budget?Math.round(p*100)+"% of monthly budget used":"Set your budget below";$("incomeV").textContent=money(s.income);$("budgetV").textContent=money(budget);$("spentV").textContent=money(spent);$("remainV").textContent=money(rem);$("cats").innerHTML=cats.map(c=>{let b=+s.budgets[c]||0,v=a.filter(e=>e.category==c).reduce((x,e)=>x+e.amount,0),r=b?v/b:0,z=r>1?"red":r>=.8?"orange":"green";return `<div class="cat"><div class="cathead"><div><div class="catname">${c}</div><div class="progress"><div class="bar ${z}" style="width:${Math.min(r*100,100)}%"></div></div></div><div class="num">${money(b)}</div><div class="num">${money(v)}</div><div class="pill ${z}">${b?(r>1?"RED":r>=.8?"WARN":"OK"):"—"}</div></div></div>`}).join("");$("expenses").innerHTML=a.length?a.slice().sort((x,y)=>y.ts-x.ts).slice(0,40).map(e=>`<div class="expense"><div><b>${e.category}</b><small>${e.date} • ${e.mode}${e.description?" • "+e.description:""}</small></div><div class="amount">${money(e.amount)}</div></div>`).join(""):"<div class='note'>No expenses for this month.</div>";let m={};a.forEach(e=>m[e.mode]=(m[e.mode]||0)+e.amount);$("modes").innerHTML=Object.entries(m).sort((x,y)=>y[1]-x[1]).map(x=>`<div class="expense"><b>${x[0]}</b><div class="amount">${money(x[1])}</div></div>`).join("")||"<div class='note'>No mode data.</div>"}async function load(){if(!C.webAppUrl){$("sync").textContent="Backend URL missing";render();return}try{let r=await fetch(C.webAppUrl+"?action=getData&month="+encodeURIComponent($("month").value),{cache:"no-store"}),d=await r.json();if(!d.ok)throw Error(d.error);s.income=+d.settings.income||0;s.overall=+d.settings.overallBudget||0;cats.forEach(c=>s.budgets[c]=+d.budgets[c]||0);s.expenses=(d.expenses||[]).map(e=>({...e,amount:+e.amount||0,ts:+e.ts||Date.now()}));save();form();render();$("sync").textContent="Google Sheet connected"}catch(e){render();$("sync").textContent="Offline / local data"}}$("ef").onsubmit=async e=>{e.preventDefault();let x={date:$("date").value,ts:Date.now(),amount:+$("amount").value,mode:$("mode").value,category:$("cat").value,description:$("desc").value.trim()};if(!(x.amount>0)){return} s.expenses.push(x);save();render();$("ef").reset();$("date").value=today;$("emsg").textContent="Saving to Google Sheet…";try{await fetch(C.webAppUrl,{method:"POST",mode:"no-cors",body:new URLSearchParams({action:"addExpense",...x,amount:String(x.amount),ts:String(x.ts)})});$("emsg").textContent="Saved locally + sent to Google Sheet."}catch(_){$("emsg").textContent="Saved locally; Sheet sync unavailable."}};$("saveB").onclick=async()=>{s.income=+$("income").value||0;s.overall=+$("overall").value||0;document.querySelectorAll(".bi").forEach(x=>s.budgets[x.dataset.c]=+x.value||0);save();render();$("bmsg").textContent="Saving budget…";try{await fetch(C.webAppUrl,{method:"POST",mode:"no-cors",body:new URLSearchParams({action:"saveBudget",month:$("month").value,income:s.income,overallBudget:s.overall,budgets:JSON.stringify(s.budgets)})});$("bmsg").textContent="Budget saved locally + sent to Google Sheet."}catch(_){$("bmsg").textContent="Saved locally; Sheet sync unavailable."}};$("month").onchange=()=>{form();render();load()};$("refresh").onclick=load;form();render();load()})()
+</script></body></html>
