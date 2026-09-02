@@ -1,39 +1,45 @@
-const CACHE="my-budget-v3-2";
-const ASSETS=[
-  "./",
-  "./index.html",
-  "./config.js",
-  "./manifest.json"
+const CACHE = "my-budget-v31";
+const APP = [
+  "/Monthly-Budget/",
+  "/Monthly-Budget/index.html",
+  "/Monthly-Budget/config.js",
+  "/Monthly-Budget/manifest.json",
+  "/Monthly-Budget/icons/icon-192.png",
+  "/Monthly-Budget/icons/icon-512.png"
 ];
 
-self.addEventListener("install",event=>{
+self.addEventListener("install", event => {
   event.waitUntil(
-    caches.open(CACHE).then(cache=>cache.addAll(ASSETS)).then(()=>self.skipWaiting())
+    caches.open(CACHE)
+      .then(cache => cache.addAll(APP))
+      .then(() => self.skipWaiting())
   );
 });
 
-self.addEventListener("activate",event=>{
+self.addEventListener("activate", event => {
   event.waitUntil(
-    caches.keys().then(keys=>Promise.all(
-      keys.filter(k=>k!==CACHE).map(k=>caches.delete(k))
-    )).then(()=>self.clients.claim())
+    caches.keys()
+      .then(keys => Promise.all(
+        keys.filter(k => k !== CACHE).map(k => caches.delete(k))
+      ))
+      .then(() => self.clients.claim())
   );
 });
 
-self.addEventListener("fetch",event=>{
-  const req=event.request;
-  if(req.method!=="GET") return;
+self.addEventListener("fetch", event => {
+  const req = event.request;
+  if (req.method !== "GET") return;
 
-  const url=new URL(req.url);
-
-  // Never cache the Google Apps Script API.
-  if(url.hostname.includes("script.google.com")) return;
+  const url = new URL(req.url);
+  if (url.origin !== self.location.origin) return;
 
   event.respondWith(
-    fetch(req).then(response=>{
-      const copy=response.clone();
-      caches.open(CACHE).then(cache=>cache.put(req,copy));
-      return response;
-    }).catch(()=>caches.match(req).then(r=>r||caches.match("./index.html")))
+    fetch(req, {cache: "no-store"}).then(res => {
+      if (res.ok) {
+        const copy = res.clone();
+        caches.open(CACHE).then(c => c.put(req, copy));
+      }
+      return res;
+    }).catch(() => caches.match(req).then(r => r || caches.match("/Monthly-Budget/index.html")))
   );
 });
