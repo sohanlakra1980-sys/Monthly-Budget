@@ -83,7 +83,21 @@ function calc(){let spent=state.expenses.filter(e=>e.date.slice(0,7)==$("month")
 $("categories").innerHTML=cats.map(c=>{let b=Number(state.budgets[c])||0,s=state.expenses.filter(e=>e.date.slice(0,7)==$("month").value&&e.category===c).reduce((x,e)=>x+e.amount,0),r=b?s/b:0,k=r>1?"red":r>=.8?"orange":"green",txt=b?(r>1?"EXCEEDED":r>=.8?"NEAR LIMIT":"OK"):"NO BUDGET";return `<div class="category"><div><b>${c}</b><div class="progress"><div class="bar ${k}" style="width:${Math.min(r*100,100)}%"></div></div></div><div>${money(b)}</div><div>${money(s)}</div><div class="pill ${k} signal">${txt}</div></div>`}).join("");
 let ex=state.expenses.filter(e=>e.date.slice(0,7)==$("month").value).sort((a,b)=>b.date.localeCompare(a.date)||b.ts-a.ts).slice(0,30);$("expenses").innerHTML=ex.length?ex.map(e=>`<div class="expense"><div><b>${e.category}</b><small>${e.date} • ${e.mode}${e.description?" • "+e.description:""}</small></div><div class="amount">${money(e.amount)}</div></div>`).join(""):'<div class="empty">No expenses for this month.</div>'}
 $("saveBudget").onclick=()=>{state.income=Math.max(0,Number($("income").value)||0);state.overallBudget=Math.max(0,Number($("overallBudget").value)||0);document.querySelectorAll(".budgetInput").forEach(i=>state.budgets[i.dataset.cat]=Math.max(0,Number(i.value)||0));save();calc();$("saveMsg").textContent="";};
-$("expenseForm").onsubmit=async ev=>{ev.preventDefault();let amount=Number($("amount").value);if(!amount||amount<0){$("saveMsg").textContent="Enter a valid amount.";return}let e={date:$("date").value,ts:Date.now(),amount,mode:$("mode").value,category:$("category").value,description:$("description").value.trim()};state.expenses.push(e);save();calc();$("expenseForm").reset();$("date").value=new Date().toISOString().slice(0,10);$("saveMsg").textContent="Saved on this device.";if(C.webAppUrl){try{let r=await fetch(C.webAppUrl,{method:"POST",body:JSON.stringify(e)});$("saveMsg").textContent=r.ok?"Saved locally + Google Sheet.":"Saved locally; Google Sheet sync failed."}catch(err){$("saveMsg").textContent="Saved locally; Google Sheet sync unavailable."}}};
+$("expenseForm").onsubmit=async ev=>{ev.preventDefault();let amount=Number($("amount").value);if(!amount||amount<0){$("saveMsg").textContent="Enter a valid amount.";return}let e={date:$("date").value,ts:Date.now(),amount,mode:$("mode").value,category:$("category").value,description:$("description").value.trim()};state.expenses.push(e);save();calc();$("expenseForm").reset();$("date").value=new Date().toISOString().slice(0,10);$("saveMsg").textContent="Saved on this device.";if(C.webAppUrl){
+  try{
+    const body=new URLSearchParams({
+      date:e.date,
+      amount:String(e.amount),
+      mode:e.mode,
+      category:e.category,
+      description:e.description
+    });
+    await fetch(C.webAppUrl,{method:"POST",mode:"no-cors",body});
+    $("saveMsg").textContent="Saved locally + sent to Google Sheet.";
+  }catch(err){
+    $("saveMsg").textContent="Saved locally; Google Sheet sync unavailable.";
+  }
+}};
 $("month").onchange=calc;calc();})();
 </script>
 </body></html>
