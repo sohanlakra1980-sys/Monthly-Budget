@@ -1,4 +1,4 @@
-const CACHE_NAME = "my-budget-v331";
+const CACHE_NAME = "my-budget-v34";
 const BASE = "/Monthly-Budget/";
 const APP_SHELL = [BASE, BASE+"index.html", BASE+"config.js", BASE+"manifest.json", BASE+"icons/icon-192.png", BASE+"icons/icon-512.png"];
 self.addEventListener("install", event => event.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(APP_SHELL)).then(() => self.skipWaiting())));

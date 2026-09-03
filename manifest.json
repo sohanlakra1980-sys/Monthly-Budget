@@ -3,8 +3,8 @@
   "name": "My Budget",
   "short_name": "My Budget",
   "description": "Monthly budget and expense tracker",
-  "start_url": "https://sohanlakra1980-sys.github.io/Monthly-Budget/?source=pwa",
-  "scope": "https://sohanlakra1980-sys.github.io/Monthly-Budget/",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "display_override": [
     "standalone",
