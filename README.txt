@@ -1,7 +1,9 @@
-MY BUDGET V3.2 — PWA INSTALL FIX
+MY BUDGET V3.3 — PWA INSTALL + DIAGNOSTIC
 
-Upload/replace ALL files in the GitHub repository ROOT.
-Required:
+UPLOAD THE CONTENTS OF THIS FOLDER TO THE ROOT OF THE Monthly-Budget GITHUB REPOSITORY.
+Do NOT upload the MyBudgetV3_3 folder itself.
+
+Required root files:
 index.html
 config.js
 manifest.json
@@ -12,9 +14,6 @@ icons/icon-512.png
 GitHub Pages URL:
 https://sohanlakra1980-sys.github.io/Monthly-Budget/
 
-Do NOT put the files inside another folder and do NOT upload the ZIP itself.
-After publishing, open the URL in Chrome, refresh once, wait 10–20 seconds,
-then use Install and create shortcut. V3.2 uses relative PWA paths specifically
-for GitHub Pages project sites.
-
-Google Apps Script backend is preserved in config.js.
+After upload, open the URL, refresh once, and look at PWA Status.
+The status tells whether the manifest and service worker are active.
+Google Apps Script backend is preserved.

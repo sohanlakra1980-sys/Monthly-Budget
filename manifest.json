@@ -1,16 +1,31 @@
 {
-  "id": "./",
+  "id": "https://sohanlakra1980-sys.github.io/Monthly-Budget/",
   "name": "My Budget",
   "short_name": "My Budget",
   "description": "Monthly budget and expense tracker",
-  "start_url": "./",
-  "scope": "./",
+  "start_url": "https://sohanlakra1980-sys.github.io/Monthly-Budget/?source=pwa",
+  "scope": "https://sohanlakra1980-sys.github.io/Monthly-Budget/",
   "display": "standalone",
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
   "orientation": "portrait",
   "background_color": "#f4f7fb",
   "theme_color": "#111827",
+  "prefer_related_applications": false,
   "icons": [
-    {"src":"./icons/icon-192.png","sizes":"192x192","type":"image/png","purpose":"any maskable"},
-    {"src":"./icons/icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}
+    {
+      "src": "https://sohanlakra1980-sys.github.io/Monthly-Budget/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://sohanlakra1980-sys.github.io/Monthly-Budget/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
   ]
 }
